@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  auth-db:
+    image: postgres:15.2
+    container_name: auth_postgres
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - auth_postgres_data:/var/lib/postgresql/data
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth_service
+    depends_on:
+      - auth-db
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_PROFILES_ACTIVE: dev
+    volumes:
+      - .m2:/root/.m2
+      - ./logs:/app/logs
+
+volumes:
+  auth_postgres_data:
