@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static com.devsxplore.authservice.domain.validation.Validation.validate;
 
@@ -37,37 +38,43 @@ public class User {
     @NotNull
     private final UserStatus status;
 
+    @Getter
+    @NotNull
+    private final Set<@Valid Role> roles;
+
 
     public User(
             UserId userId,
             String username,
             String email,
             String password,
-            UserStatus status
+            UserStatus status,
+            Set<Role> roles
     ) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.password = password;
         this.status = status;
+        this.roles = roles;
     }
 
 
     public record UserId(Long userId) {
         public UserId(@NotNull Long userId) {
-            if (userId == null || userId <= 0)
+            if (userId <= 0)
                 throw new IllegalArgumentException("User ID must be a positive number.");
             this.userId = userId;
             validate(this);
         }
     }
 
-    public static User userWithId(UserId userId, String username, String email, String password, UserStatus status) {
-        return new User(userId, username, email, password, status);
+    public static User userWithId(UserId userId, String username, String email, String password, UserStatus status, Set<Role> roles) {
+        return new User(userId, username, email, password, status, roles);
     }
 
-    public static User userWithoutId(String username, String email, String password, UserStatus status) {
-        return new User(null, username, email, password, status);
+    public static User userWithoutId(String username, String email, String password, UserStatus status, Set<Role> roles) {
+        return new User(null, username, email, password, status, roles);
     }
 
     public Optional<UserId> getUserId() {
