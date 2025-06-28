@@ -7,8 +7,16 @@ import java.util.Optional;
 
 public interface UserRepositoryPort {
     User save(User user);
+
     Optional<User> findUserByUserId(Long userId);
+
     void deleteByUserId(Long userId);
+
     boolean existsByUserId(Long userId);
+
     List<User> findAllUsers();
+
+    Optional<User> findUserByEmail(String email);
+
+    Optional<User> findUserByUsername(String username);
 }
