@@ -1,7 +1,7 @@
-package com.devsxplore.authservice.application.service;
+package com.devsxplore.authservice.application.service.user;
 
-import com.devsxplore.authservice.application.port.in.command.GetUserCommand;
-import com.devsxplore.authservice.application.port.in.usecase.GetUserUseCase;
+import com.devsxplore.authservice.application.port.in.command.user.GetUserCommand;
+import com.devsxplore.authservice.application.port.in.usecase.user.GetUserUseCase;
 import com.devsxplore.authservice.application.port.out.UserRepositoryPort;
 import com.devsxplore.authservice.domain.model.User;
 import lombok.RequiredArgsConstructor;

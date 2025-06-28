@@ -1,7 +1,7 @@
-package com.devsxplore.authservice.application.service;
+package com.devsxplore.authservice.application.service.user;
 
-import com.devsxplore.authservice.application.port.in.command.DeleteUserCommand;
-import com.devsxplore.authservice.application.port.in.usecase.DeleteUserUseCase;
+import com.devsxplore.authservice.application.port.in.command.user.DeleteUserCommand;
+import com.devsxplore.authservice.application.port.in.usecase.user.DeleteUserUseCase;
 import com.devsxplore.authservice.application.port.out.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class DeleteUserService implements DeleteUserUseCase {
 
     @Override
     public void deleteUserByUserId(DeleteUserCommand command) {
-        if(!userRepositoryPort.existsByUserId(command.userId())) {
+        if (!userRepositoryPort.existsByUserId(command.userId())) {
             throw new RuntimeException("User not found");
         }
         userRepositoryPort.deleteByUserId(command.userId());
