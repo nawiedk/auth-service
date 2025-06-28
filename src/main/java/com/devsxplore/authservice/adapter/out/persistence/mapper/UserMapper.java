@@ -5,9 +5,13 @@ import com.devsxplore.authservice.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
 public class UserMapper {
+
+    private final RoleMapper roleMapper;
 
     public User mapToDomainEntity(UserJpaEntity entity) {
         return User.userWithId(
@@ -15,7 +19,8 @@ public class UserMapper {
                 entity.getUsername(),
                 entity.getEmail(),
                 entity.getPassword(),
-                entity.getStatus()
+                entity.getStatus(),
+                entity.getRoles().stream().map(roleMapper::mapToDomainEntity).collect(Collectors.toSet())
         );
     }
 
@@ -26,6 +31,7 @@ public class UserMapper {
         entity.setEmail(user.getEmail());
         entity.setPassword(user.getPassword());
         entity.setStatus(user.getStatus());
+        entity.setRoles(user.getRoles().stream().map(roleMapper::mapToJpaEntity).collect(Collectors.toSet()));
         return entity;
     }
 }

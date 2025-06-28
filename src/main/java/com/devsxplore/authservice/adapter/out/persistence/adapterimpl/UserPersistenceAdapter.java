@@ -47,4 +47,16 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
                 .map(userMapper::mapToDomainEntity)
                 .toList();
     }
+
+    @Override
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(userMapper::mapToDomainEntity);
+    }
+
+    @Override
+    public Optional<User> findUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(userMapper::mapToDomainEntity);
+    }
 }
