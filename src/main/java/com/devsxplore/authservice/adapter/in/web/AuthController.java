@@ -52,9 +52,11 @@ public class AuthController {
         dto.setUsername("admin");
         dto.setEmail("admin@mail.com");
         dto.setPassword("admin123");
-        registerUseCase.registerAdmin(
-                requestMapper.generateCreateUserCommand(dto)
-        );
+
+        if (getUserUseCase.getUserByUserId(new GetUserCommand(1L)) != null)
+            registerUseCase.registerAdmin(
+                    requestMapper.generateCreateUserCommand(dto)
+            );
     }
 
 
