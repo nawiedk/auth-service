@@ -1,5 +1,6 @@
 package com.devsxplore.authservice.application.service.user;
 
+import com.devsxplore.authservice.application.port.in.command.user.GetUserByUsernameCommand;
 import com.devsxplore.authservice.application.port.in.command.user.GetUserCommand;
 import com.devsxplore.authservice.application.port.in.usecase.user.GetUserUseCase;
 import com.devsxplore.authservice.application.port.out.UserRepositoryPort;
@@ -21,6 +22,11 @@ public class GetUserService implements GetUserUseCase {
     public User getUserByUserId(GetUserCommand command) {
         return userRepositoryPort.findUserByUserId(command.userId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public boolean userExistsByUsername(GetUserByUsernameCommand command) {
+        return userRepositoryPort.findUserByUsername(command.Username()).isPresent();
     }
 
     @Override

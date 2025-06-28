@@ -8,6 +8,7 @@ import com.devsxplore.authservice.adapter.in.web.mapper.request.LoginRequestMapp
 import com.devsxplore.authservice.adapter.in.web.mapper.request.UserRequestMapper;
 import com.devsxplore.authservice.adapter.in.web.mapper.response.*;
 import com.devsxplore.authservice.application.port.in.command.user.DeleteUserCommand;
+import com.devsxplore.authservice.application.port.in.command.user.GetUserByUsernameCommand;
 import com.devsxplore.authservice.application.port.in.command.user.GetUserCommand;
 import com.devsxplore.authservice.application.port.in.usecase.LoginUseCase;
 import com.devsxplore.authservice.application.port.in.usecase.RegisterUseCase;
@@ -53,7 +54,7 @@ public class AuthController {
         dto.setEmail("admin@mail.com");
         dto.setPassword("admin123");
 
-        if (getUserUseCase.getUserByUserId(new GetUserCommand(1L)) != null)
+        if (!getUserUseCase.userExistsByUsername(new GetUserByUsernameCommand(dto.getUsername())))
             registerUseCase.registerAdmin(
                     requestMapper.generateCreateUserCommand(dto)
             );
