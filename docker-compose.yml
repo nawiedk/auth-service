@@ -8,9 +8,14 @@ services:
     env_file:
       - .env
     ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - auth_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   auth-service:
     build:
@@ -18,19 +23,18 @@ services:
       dockerfile: Dockerfile
     container_name: auth_service
     depends_on:
-      - auth-db
+      auth-db:
+        condition: service_healthy
     env_file:
       - .env
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: "true"
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_JWT_SECRET: ${JWT_SECRET}
+      SPRING_JWT_EXPIRATION: ${JWT_EXPIRATION}
     volumes:
       - .m2:/root/.m2
       - ./logs:/app/logs
