@@ -1,4 +1,4 @@
-package com.devsxplore.authservice.application.port.in.command;
+package com.devsxplore.authservice.application.port.in.command.user;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
