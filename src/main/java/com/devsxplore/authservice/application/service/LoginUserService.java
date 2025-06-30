@@ -51,7 +51,7 @@ public class LoginUserService implements LoginUseCase {
         }
 
         if (user.getRoles().stream().noneMatch(role -> role.getName().equalsIgnoreCase("ADMIN"))) {
-            throw new IllegalArgumentException("Access denied. User is not an admin");
+            throw new IllegalArgumentException("Access denied.");
         }
 
         var userDetails = new org.springframework.security.core.userdetails.User(
