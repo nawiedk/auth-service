@@ -40,4 +40,31 @@ public class LoginUserService implements LoginUseCase {
                 user.getUserId().map(User.UserId::userId).orElseThrow()
         );
     }
+
+    @Override
+    public String loginAdmin(LoginUserCommand command) {
+        var user = userRepositoryPort.findUserByEmail(command.email())
+                .orElseThrow(() -> new IllegalArgumentException("This user does not exist"));
+
+        if (!passwordEncoder.matches(command.password(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid credentials");
+        }
+
+        if (user.getRoles().stream().noneMatch(role -> role.getName().equalsIgnoreCase("ADMIN"))) {
+            throw new IllegalArgumentException("Access denied. User is not an admin");
+        }
+
+        var userDetails = new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                user.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                        .toList()
+        );
+
+        return jwtService.generateToken(
+                userDetails,
+                user.getUserId().map(User.UserId::userId).orElseThrow()
+        );
+    }
 }

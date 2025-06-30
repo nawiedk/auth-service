@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/auth").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/admin/login").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/auth/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/auth/{userId}").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -58,9 +58,7 @@ public class SecurityConfig {
                 "https://nawied.ch",
                 "https://www.nawied.ch",
                 "https://nawied.eu",
-                "https://www.nawied.eu",
-                "http://localhost:5173",
-                "http://localhost:8081"
+                "https://www.nawied.eu"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

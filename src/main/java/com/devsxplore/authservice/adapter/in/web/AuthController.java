@@ -6,7 +6,10 @@ import com.devsxplore.authservice.adapter.in.web.dto.RegisterUserDto;
 import com.devsxplore.authservice.adapter.in.web.dto.UserUpdateDto;
 import com.devsxplore.authservice.adapter.in.web.mapper.request.LoginRequestMapper;
 import com.devsxplore.authservice.adapter.in.web.mapper.request.UserRequestMapper;
-import com.devsxplore.authservice.adapter.in.web.mapper.response.*;
+import com.devsxplore.authservice.adapter.in.web.mapper.response.AuthResponse;
+import com.devsxplore.authservice.adapter.in.web.mapper.response.AuthResponseMapper;
+import com.devsxplore.authservice.adapter.in.web.mapper.response.UserResponse;
+import com.devsxplore.authservice.adapter.in.web.mapper.response.UserResponseMapper;
 import com.devsxplore.authservice.application.port.in.command.user.DeleteUserCommand;
 import com.devsxplore.authservice.application.port.in.command.user.GetUserByUsernameCommand;
 import com.devsxplore.authservice.application.port.in.command.user.GetUserCommand;
@@ -15,14 +18,15 @@ import com.devsxplore.authservice.application.port.in.usecase.RegisterUseCase;
 import com.devsxplore.authservice.application.port.in.usecase.user.DeleteUserUseCase;
 import com.devsxplore.authservice.application.port.in.usecase.user.GetUserUseCase;
 import com.devsxplore.authservice.application.port.in.usecase.user.UpdateUserUseCase;
-import com.devsxplore.authservice.application.service.JwtService;
 import com.devsxplore.authservice.domain.model.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,17 +46,25 @@ public class AuthController {
     private final UserResponseMapper responseMapper;
 
     private final LoginRequestMapper loginRequestMapper;
-    private final LoginResponseMapper loginResponseMapper;
 
     private final AuthResponseMapper authResponseMapper;
-    private final JwtService jwtService;
+
+    @Value("${application.security.username}")
+    private String username;
+
+    @Value("${application.security.email}")
+    private String email;
+
+    @Value("${application.security.password}")
+    private String password;
 
     @PostConstruct
     public void init() {
         var dto = new RegisterUserDto();
-        dto.setUsername("admin");
-        dto.setEmail("admin@mail.com");
-        dto.setPassword("admin123");
+
+        dto.setUsername(username);
+        dto.setEmail(email);
+        dto.setPassword(password);
 
         if (!getUserUseCase.userExistsByUsername(new GetUserByUsernameCommand(dto.getUsername())))
             registerUseCase.registerAdmin(
@@ -91,6 +103,15 @@ public class AuthController {
         return ResponseEntity.ok(authResponseMapper.toAuthResponse(jwtToken));
     }
 
+
+    @PostMapping("/admin/login")
+    public ResponseEntity<AuthResponse> loginAdmin(@Valid @RequestBody LoginUserDto dto, Authentication authentication) {
+        String jwtToken = loginUseCase.loginAdmin(
+                loginRequestMapper.generateLoginUserCommand(dto)
+        );
+
+        return ResponseEntity.ok(authResponseMapper.toAuthResponse(jwtToken));
+    }
 
     @GetMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
