@@ -25,5 +25,6 @@ CREATE TABLE user_roles
 );
 
 INSERT INTO ROLES(name)
-VALUES ('ADMIN'),
+VALUES ('SUPERUSER'),
+       ('ADMIN'),
        ('USER');
