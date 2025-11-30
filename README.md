@@ -1,5 +1,9 @@
 # Auth Service
 
+[![Java](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)](https://www.docker.com/)
+
 A robust, containerized Authentication Service built with Java 21 and Spring Boot 3.5.0. This service implements **Hexagonal Architecture** (Ports and Adapters) to ensure separation of concerns and maintainability. It handles user registration, login, role-based access control, and JWT token management.
 
 ## 🚀 Technologies & Stack
